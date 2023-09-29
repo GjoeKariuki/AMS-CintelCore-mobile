@@ -11,6 +11,34 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import axios from "axios";
 import { Formik } from "formik";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import AwesomeButton from "react-native-really-awesome-button";
+import { Audio } from 'expo-av';
+import * as Haptics from 'expo-haptics';
+
+
+async function playSoundAndVibrate() {
+  const sound = new Audio.Sound();
+
+  try {
+    console.log('Loading Sound');
+    await sound.loadAsync(require('../assets/sounds/arp-03-83545.mp3'));
+    await sound.playAsync();
+
+    Haptics.notificationAsync(
+      Haptics.NotificationFeedbackType.Success
+    );
+    
+    sound.setOnPlaybackStatusUpdate(async (status) => {
+      if (status.didJustFinish) {
+        // The sound has finished playing, unload it
+        await sound.unloadAsync();
+      }
+    });
+  } catch (error) {
+    // Handle errors here
+    console.error('Error:', error);
+  }
+}
 
 export default function Home() {
   const [email, setEmail] = useState("");
@@ -25,6 +53,7 @@ export default function Home() {
 
   const handleLogin = async ({ email, password }) => {
     try {
+      playSoundAndVibrate();
       console.log("Email: ", email);
       console.log("Password: ", password);
       const data = {
@@ -104,12 +133,8 @@ export default function Home() {
                 />
               )}
             />
-            <Button
-              onPress={handleSubmit}
-              title="Submit"
-              style={styles.submitButton}
-              titleStyle={{ fontSize: 18 }}
-            />
+  
+            <AwesomeButton backgroundColor="#010089" onPress={handleSubmit} stretch>SUBMIT</AwesomeButton>
           </View>
         )}
       </Formik>
