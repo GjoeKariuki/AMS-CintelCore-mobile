@@ -1,9 +1,10 @@
 {
   "expo": {
-    "name": "cintelcore-ams",
+    "name": "CintelCore AMS",
     "slug": "cintelcore-ams",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "scheme": "cintelcore-ams",
+    "orientation": "landscape",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
