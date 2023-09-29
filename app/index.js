@@ -33,7 +33,7 @@ export default function Home() {
       };
 
       const response = await axios.post(
-        apiUrl,
+        apiUrl+"/login/",
         data,
         {
           headers: {
