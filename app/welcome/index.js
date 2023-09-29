@@ -77,11 +77,13 @@ export default function Welcome() {
             <ThemedButton
               name="rick"
               backgroundColor="#010089"
-              backgroundDarker="#CFDEE9"
+              backgroundDarker="#D51635"
               textColor="#FFFFFF"
               textSize={22}
+              springRelease={true}
               height={56}
               onPress={handleCheckIn}
+              
             >
               CHECK-IN
             </ThemedButton>

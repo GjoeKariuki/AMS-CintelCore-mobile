@@ -118,16 +118,15 @@ export default function FaceDetection() {
             first_name: response.data.first_name,
             last_name: response.data.last_name,
           });
-
           
-        } else {
-          router.push("/details");
-          // The image URI is stored locally. You can submit it later.
-        }
+          router.push("/goodbye");
+        } 
+        
       } catch (error) {
 
         if (error.response) {
           if (error.response.status === 400) {
+            console.log("Error: ", error.response.status);
             alert("Please Check-in first before Checking out!");
             router.push("/welcome");
           } else {
@@ -136,7 +135,8 @@ export default function FaceDetection() {
         }
       } finally {
         setIsRequestInProgress(false);
-        console.log("Request Status: ", isRequestInProgress);
+        
+        
       }
     }
   };

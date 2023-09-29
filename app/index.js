@@ -16,6 +16,7 @@ import { Audio } from 'expo-av';
 import * as Haptics from 'expo-haptics';
 
 
+
 async function playSoundAndVibrate() {
   const sound = new Audio.Sound();
 
@@ -134,7 +135,7 @@ export default function Home() {
               )}
             />
   
-            <AwesomeButton backgroundColor="#010089" onPress={handleSubmit} stretch>SUBMIT</AwesomeButton>
+            <AwesomeButton backgroundColor="#010089" onPress={handleSubmit} stretch borderRadius={50}>SUBMIT</AwesomeButton>
           </View>
         )}
       </Formik>
