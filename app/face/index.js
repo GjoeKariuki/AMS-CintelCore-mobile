@@ -1,12 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-  Button,
-  Animated,
-} from "react-native";
+import { StyleSheet, Text, View, Dimensions, Button } from "react-native";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -14,6 +7,7 @@ import * as FaceDetector from "expo-face-detector";
 import { Camera, CameraType } from "expo-camera";
 import * as FileSystem from "expo-file-system";
 import axios from "axios";
+import { useUser, useUserDispatch } from "../../lib/contexts/userContext";
 
 const { width: windowWidth } = Dimensions.get("window");
 
@@ -28,7 +22,7 @@ const PREVIEW_RECT = {
 const THRESHOLD = 0.8; // the ratio of face area to preview area to take an image
 const FILL_DURATION = 2000; // duration of the fill animation in milliseconds
 
-export default function App() {
+export default function FaceDetection() {
   const [type, setType] = useState(CameraType.front);
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [faces, setFaces] = useState([]);
@@ -37,6 +31,7 @@ export default function App() {
   const [isRequestInProgress, setIsRequestInProgress] = useState(false);
   const cameraRef = useRef(null);
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+  const dispatch = useUserDispatch();
 
   useEffect(() => {
     if (isFaceDetected) {
@@ -45,6 +40,11 @@ export default function App() {
       setFillAnimation(0);
     }
   }, [isFaceDetected]);
+
+  function handleChangeName({ first_name, last_name }) {
+    dispatch({ type: "SET_FIRST_NAME", payload: first_name });
+    dispatch({ type: "SET_LAST_NAME", payload: last_name });
+  }
 
   if (!permission) {
     // Camera permissions are still loading
@@ -108,16 +108,37 @@ export default function App() {
       };
 
       try {
-        const response = await axios.post(
-          apiUrl+"/checkin/",
-          form,
-          config
-        );
+        const response = await axios.post(apiUrl + "/checkin/", form, config);
         console.log(
           `Response Exists: ${JSON.stringify(response.data, null, 2)}`
         );
+        if (response && response.data) {
+          handleChangeName({
+            first_name: response.data.first_name,
+            last_name: response.data.last_name,
+          });
+
+          AsyncStorage.setItem("FirstName", response.data.first_name);
+          AsyncStorage.setItem("LastName", response.data.last_name);
+          AsyncStorage.setItem("visitorId", response.data.id.toString());
+
+          router.push("/floor");
+        } else {
+          router.push("/details");
+          // The image URI is stored locally. You can submit it later.
+        }
       } catch (error) {
         console.error("Status Code: ", error.response.status);
+        if (error.response) {
+          if (error.response.status === 404) {
+            router.push("/details");
+          } else if (error.response.status === 400) {
+            alert("You're already Checked In, Checkout first!");
+            router.push("/welcome");
+          } else {
+            console.error("Status Code: ", error.response.status);
+          }
+        }
       } finally {
         setIsRequestInProgress(false);
         console.log("Request Status: ", isRequestInProgress);
@@ -135,7 +156,6 @@ export default function App() {
           ref={cameraRef}
           style={{ ...StyleSheet.absoluteFill, aspectRatio: 1 }}
           type={type}
-          
           onFacesDetected={handleFacesDetected}
           faceDetectorSettings={{
             mode: FaceDetector.FaceDetectorMode.accurate,
@@ -157,7 +177,6 @@ export default function App() {
         </Camera>
       </MaskedView>
       <View style={styles.instructionsContainer}>
-        
         <Text style={styles.action}>Standby for Image Capture</Text>
       </View>
     </SafeAreaView>
