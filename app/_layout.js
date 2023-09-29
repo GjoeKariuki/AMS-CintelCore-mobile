@@ -1,5 +1,11 @@
-import { Slot } from 'expo-router';
+import { Slot } from "expo-router";
+import { Header } from "./components/header";
 
 export default function HomeLayout() {
-  return <Slot />;
+  return (
+    <>
+      <Header />
+      <Slot />
+    </>
+  );
 }
