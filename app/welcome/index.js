@@ -55,6 +55,7 @@ export default function Welcome() {
 
   const handleCheckIn = () => {
     playSoundAndVibrate();
+    router.push("/face");
   };
 
   const handleCheckOut = () => {

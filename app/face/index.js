@@ -1,0 +1,202 @@
+import React, { useState, useEffect, useRef } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Button,
+  Animated,
+} from "react-native";
+import MaskedView from "@react-native-masked-view/masked-view";
+import { AnimatedCircularProgress } from "react-native-circular-progress";
+import { SafeAreaView } from "react-native-safe-area-context";
+import * as FaceDetector from "expo-face-detector";
+import { Camera, CameraType } from "expo-camera";
+import * as FileSystem from "expo-file-system";
+import axios from "axios";
+
+const { width: windowWidth } = Dimensions.get("window");
+
+const PREVIEW_SIZE = 400;
+const PREVIEW_RECT = {
+  minX: (windowWidth - PREVIEW_SIZE) / 2,
+  minY: 50,
+  width: PREVIEW_SIZE,
+  height: PREVIEW_SIZE,
+};
+
+const THRESHOLD = 0.8; // the ratio of face area to preview area to take an image
+const FILL_DURATION = 2000; // duration of the fill animation in milliseconds
+
+export default function App() {
+  const [type, setType] = useState(CameraType.front);
+  const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [faces, setFaces] = useState([]);
+  const [isFaceDetected, setIsFaceDetected] = useState(false);
+  const [fillAnimation, setFillAnimation] = useState(0);
+  const [isRequestInProgress, setIsRequestInProgress] = useState(false);
+  const cameraRef = useRef(null);
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+
+  useEffect(() => {
+    if (isFaceDetected) {
+      setFillAnimation(100);
+    } else if (!isFaceDetected) {
+      setFillAnimation(0);
+    }
+  }, [isFaceDetected]);
+
+  if (!permission) {
+    // Camera permissions are still loading
+    return <View />;
+  }
+
+  if (!permission.granted) {
+    // Camera permissions are not granted yet
+    return (
+      <View style={styles.container}>
+        <Text style={{ textAlign: "center" }}>
+          We need your permission to access the camera
+        </Text>
+        <Button onPress={requestPermission} title="Grant Permission" />
+      </View>
+    );
+  }
+
+  const handleFacesDetected = ({ faces }) => {
+    if (faces.length > 0 && !isRequestInProgress) {
+      setIsFaceDetected(true);
+      setFaces(faces);
+      // check if the face is large enough to fill the preview area
+      const face = faces[0]; // assume only one face is detected
+      const faceArea = face.bounds.size.width * face.bounds.size.height;
+      const previewArea = PREVIEW_SIZE * PREVIEW_SIZE;
+      const ratio = faceArea / previewArea;
+      if (ratio >= THRESHOLD && isFaceDetected) {
+        capturePhotoAndNavigate();
+        // take an image
+        console.log("Image taken!");
+      }
+    } else {
+      setIsFaceDetected(false);
+      setFaces([]);
+    }
+  };
+
+  const capturePhotoAndNavigate = async () => {
+    if (cameraRef.current && isFaceDetected && !isRequestInProgress) {
+      setIsRequestInProgress(true);
+      const photo = await cameraRef.current.takePictureAsync();
+      const localUri = `${FileSystem.documentDirectory}${Date.now()}.jpg`;
+
+      await FileSystem.copyAsync({
+        from: photo.uri,
+        to: localUri,
+      });
+
+      let form = new FormData();
+      form.append("image", {
+        uri: localUri,
+        name: "image.jpg",
+        type: "image/jpg",
+      });
+
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      try {
+        const response = await axios.post(
+          apiUrl+"/checkin/",
+          form,
+          config
+        );
+        console.log(
+          `Response Exists: ${JSON.stringify(response.data, null, 2)}`
+        );
+      } catch (error) {
+        console.error("Status Code: ", error.response.status);
+      } finally {
+        setIsRequestInProgress(false);
+        console.log("Request Status: ", isRequestInProgress);
+      }
+    }
+  };
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <MaskedView
+        style={StyleSheet.absoluteFill}
+        maskElement={<View style={styles.mask} />}
+      >
+        <Camera
+          ref={cameraRef}
+          style={{ ...StyleSheet.absoluteFill, aspectRatio: 1 }}
+          type={type}
+          
+          onFacesDetected={handleFacesDetected}
+          faceDetectorSettings={{
+            mode: FaceDetector.FaceDetectorMode.accurate,
+            detectLandmarks: FaceDetector.FaceDetectorLandmarks.none,
+            runClassifications: FaceDetector.FaceDetectorClassifications.none,
+            minDetectionInterval: 2000,
+            tracking: true,
+          }}
+        >
+          <AnimatedCircularProgress
+            style={styles.circularProgress}
+            size={PREVIEW_SIZE}
+            width={10}
+            backgroundWidth={7}
+            fill={fillAnimation}
+            tintColor="#010089"
+            backgroundColor="#e8e8e8"
+          />
+        </Camera>
+      </MaskedView>
+      <View style={styles.instructionsContainer}>
+        
+        <Text style={styles.action}>Standby for Image Capture</Text>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 6,
+  },
+  mask: {
+    borderRadius: PREVIEW_SIZE / 2,
+    height: PREVIEW_SIZE,
+    width: PREVIEW_SIZE,
+    marginTop: PREVIEW_RECT.minY,
+    alignSelf: "center",
+    backgroundColor: "white",
+  },
+  circularProgress: {
+    width: PREVIEW_SIZE,
+    height: PREVIEW_SIZE,
+    marginTop: PREVIEW_RECT.minY,
+    marginLeft: PREVIEW_RECT.minX,
+  },
+  instructions: {
+    fontSize: 20,
+    textAlign: "center",
+    top: 25,
+    position: "absolute",
+  },
+  instructionsContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: PREVIEW_RECT.minY + PREVIEW_SIZE,
+  },
+  action: {
+    fontSize: 24,
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+});
