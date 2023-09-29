@@ -9,6 +9,7 @@ import * as FileSystem from "expo-file-system";
 import axios from "axios";
 import { useUser, useUserDispatch } from "../../lib/contexts/userContext";
 import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width: windowWidth } = Dimensions.get("window");
 
@@ -90,10 +91,14 @@ export default function FaceDetection() {
       const photo = await cameraRef.current.takePictureAsync();
       const localUri = `${FileSystem.documentDirectory}${Date.now()}.jpg`;
 
+      // Copying the captured image to the app's local directory
       await FileSystem.copyAsync({
         from: photo.uri,
         to: localUri,
       });
+
+      // Store the local URI in AsyncStorage for future reference
+      await AsyncStorage.setItem("localPhotoUri", localUri);
 
       let form = new FormData();
       form.append("image", {

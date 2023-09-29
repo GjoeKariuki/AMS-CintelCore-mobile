@@ -1,21 +1,22 @@
 import { router } from "expo-router";
 import { View, StyleSheet } from "react-native";
 import { Field, Formik } from "formik";
-import { Text, Stack, Button } from "@react-native-material/core";
+import { Text } from "@react-native-material/core";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Audio } from 'expo-av';
+import * as Haptics from 'expo-haptics';
 
 import { useUser, useUserDispatch } from "../../lib/contexts/userContext";
 import { CustomInput } from "../components/customInput";
 import AwesomeButton from "react-native-really-awesome-button";
-import { Audio } from "expo-av";
-import * as Haptics from "expo-haptics";
+
 
 async function playSoundAndVibrate() {
   const sound = new Audio.Sound();
 
   try {
     console.log("Loading Sound");
-    await sound.loadAsync(require("../assets/sounds/arp-03-83545.mp3"));
+    await sound.loadAsync(require("../../assets/sounds/arp-03-83545.mp3"));
     await sound.playAsync();
 
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -83,9 +84,10 @@ export default function FullName() {
                   labelStyle={{ fontSize: 32 }}
                 />
               </View>
-
-              <View style={{ flexDirection: "column", marginTop: 12, gap: 20 }}>
-              <AwesomeButton backgroundColor="#010089" onPress={handleSubmit} stretch>Next</AwesomeButton>
+              <View style={styles.nextButton}>
+                <AwesomeButton backgroundColor="#010089" onPress={handleSubmit} stretch textSize={20}>
+                  Next
+                </AwesomeButton>
               </View>
             </View>
           )}
@@ -109,7 +111,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     paddingTop: 20,
-    gap: 60,
+    gap: 40,
   },
   input: {
     flex: 1,
@@ -117,9 +119,8 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     width: 120,
-    height: 55,
     justifyContent: "center",
-    marginTop: 46,
+    marginTop: 56,
     marginLeft: 10,
   },
   name: {
