@@ -60,6 +60,7 @@ export default function Welcome() {
 
   const handleCheckOut = () => {
     playSoundAndVibrate();
+    router.push("/checkout");
   };
 
   return (

@@ -109,7 +109,7 @@ export default function FaceDetection() {
       };
 
       try {
-        const response = await axios.post(apiUrl + "/checkin/", form, config);
+        const response = await axios.post(apiUrl + "/checkout/", form, config);
         console.log(
           `Response Exists: ${JSON.stringify(response.data, null, 2)}`
         );
@@ -119,21 +119,16 @@ export default function FaceDetection() {
             last_name: response.data.last_name,
           });
 
-          AsyncStorage.setItem("FirstName", response.data.first_name);
-          AsyncStorage.setItem("LastName", response.data.last_name);
-          AsyncStorage.setItem("visitorId", response.data.id.toString());
-
-          router.push("/floor");
+          
         } else {
           router.push("/details");
           // The image URI is stored locally. You can submit it later.
         }
       } catch (error) {
+
         if (error.response) {
-          if (error.response.status === 404) {
-            router.push("/details");
-          } else if (error.response.status === 400) {
-            alert("You're already Checked In, Checkout first!");
+          if (error.response.status === 400) {
+            alert("Please Check-in first before Checking out!");
             router.push("/welcome");
           } else {
             console.error("Status Code: ", error.response.status);
