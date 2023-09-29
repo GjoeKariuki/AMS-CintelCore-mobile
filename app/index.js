@@ -17,6 +17,8 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
 
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+
   const toggleSecureTextEntry = () => {
     setSecureTextEntry(!secureTextEntry);
   };
@@ -31,7 +33,7 @@ export default function Home() {
       };
 
       const response = await axios.post(
-        "https://cintelcoreams.com/login/",
+        apiUrl,
         data,
         {
           headers: {
