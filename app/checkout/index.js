@@ -66,14 +66,19 @@ export default function FaceDetection() {
 
   const handleFacesDetected = ({ faces }) => {
     if (faces.length > 0 && !isRequestInProgress) {
+      const face = faces[0]; // assume only one face is detected
+      const faceWidth = face.bounds.size.width;
+      const faceHeight = face.bounds.size.height;
+      const faceArea = faceWidth * faceHeight;
+      const previewArea = PREVIEW_SIZE * PREVIEW_SIZE;
+      const ratio = Math.min(1, faceArea / previewArea); // Ensure the ratio does not exceed 1
+      const fillPercentage = ratio * 100;
+
       setIsFaceDetected(true);
       setFaces(faces);
-      // check if the face is large enough to fill the preview area
-      const face = faces[0]; // assume only one face is detected
-      const faceArea = face.bounds.size.width * face.bounds.size.height;
-      const previewArea = PREVIEW_SIZE * PREVIEW_SIZE;
-      const ratio = faceArea / previewArea;
-      if (ratio >= THRESHOLD && isFaceDetected) {
+      setFillAnimation(fillPercentage); // Set the fill animation based on the face area ratio
+
+      if (fillPercentage >= 100) {
         capturePhotoAndNavigate();
         // take an image
         console.log("Image taken!");
@@ -81,6 +86,7 @@ export default function FaceDetection() {
     } else {
       setIsFaceDetected(false);
       setFaces([]);
+      setFillAnimation(0); // Reset the fill animation if no face is detected
     }
   };
 
@@ -118,12 +124,10 @@ export default function FaceDetection() {
             first_name: response.data.first_name,
             last_name: response.data.last_name,
           });
-          
-          router.push("/goodbye");
-        } 
-        
-      } catch (error) {
 
+          router.push("/goodbye");
+        }
+      } catch (error) {
         if (error.response) {
           if (error.response.status === 400) {
             console.log("Error: ", error.response.status);
@@ -135,8 +139,6 @@ export default function FaceDetection() {
         }
       } finally {
         setIsRequestInProgress(false);
-        
-        
       }
     }
   };
@@ -149,7 +151,8 @@ export default function FaceDetection() {
       >
         <Camera
           ref={cameraRef}
-          style={{ ...StyleSheet.absoluteFill, aspectRatio: 1 }}
+          style={{ ...StyleSheet.absoluteFill }}
+          ratio="16:9"
           type={type}
           onFacesDetected={handleFacesDetected}
           faceDetectorSettings={{
