@@ -75,7 +75,10 @@ export default function Floor() {
   const _onPress = (floor) => {
     playSoundAndVibrate();
     selectFloor(floor);
-    router.push("/office");
+    // Delay the navigation to the next screen by 1 second (adjust the delay duration as needed)
+    setTimeout(() => {
+      router.push("/office");
+    }, 1000); // Delay in milliseconds (1 second in this case)
   };
 
   const renderFloorButtons = () => {
@@ -93,12 +96,13 @@ export default function Floor() {
           row.push(
             <View style={styles.floorButton} key={`floor-${floor.id}`}>
               <AwesomeButton
-                backgroundColor="#010089"
+                backgroundColor="#08154A"
                 onPress={() => _onPress(floor)}
                 stretch
                 borderRadius={50}
                 key={`button-${floor.id}`}
                 textSize={20}
+                backgroundDarker="#E48594"
               >
                 {floor.floor_number.toString()}
               </AwesomeButton>
@@ -138,10 +142,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     marginLeft: 60,
-    
   },
   content: {
-    width: 900
+    width: 900,
   },
   row: {
     flexDirection: "row",
@@ -150,13 +153,12 @@ const styles = StyleSheet.create({
   title: {
     textAlign: "center",
     color: "#010089",
-    marginTop: 70
-    
+    marginTop: 70,
   },
   floorButton: {
     width: 120,
     justifyContent: "center",
     marginTop: 36,
     marginLeft: 10,
-  }
+  },
 });

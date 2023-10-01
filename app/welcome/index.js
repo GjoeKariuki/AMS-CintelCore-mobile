@@ -55,19 +55,25 @@ export default function Welcome() {
 
   const handleCheckIn = () => {
     playSoundAndVibrate();
+     // Delay the navigation to the next screen by 1 second (adjust the delay duration as needed)
+  setTimeout(() => {
     router.push("/face");
+  }, 1000); // Delay in milliseconds (1 second in this case)
   };
 
   const handleCheckOut = () => {
     playSoundAndVibrate();
+     // Delay the navigation to the next screen by 1 second (adjust the delay duration as needed)
+  setTimeout(() => {
     router.push("/checkout");
+  }, 1000); // Delay in milliseconds (1 second in this case)
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
         <Stack spacing={15}>
-          <Text variant="h3">Welcome To : </Text>
+          <Text variant="h3" style={styles.welcome}>Welcome To : </Text>
 
           <Text variant="h2" style={styles.buildingName}>
             {buildingName}
@@ -76,9 +82,9 @@ export default function Welcome() {
           <View style={styles.actions}>
             <ThemedButton
               name="rick"
-              backgroundColor="#010089"
-              backgroundDarker="#D51635"
-              textColor="#FFFFFF"
+              backgroundColor="#08154A"
+              type="primary"
+              
               textSize={22}
               springRelease={true}
               height={56}
@@ -89,7 +95,6 @@ export default function Welcome() {
             </ThemedButton>
             <ThemedButton
               name="rick"
-              backgroundDarker="#010089"
               textSize={22}
               height={56}
               onPress={handleCheckOut}
@@ -122,6 +127,10 @@ const styles = StyleSheet.create({
     paddingLeft: 60,
     alignItems: "center",
     flexDirection: "row",
+  },
+  welcome: {
+    color: "#566570"
+
   },
 
   checkInButton: {
@@ -160,6 +169,6 @@ const styles = StyleSheet.create({
   buildingName: {
     fontWeight: 700,
     fontSize: 72,
-    color: "#010089",
+    color: "#08154A",
   },
 });

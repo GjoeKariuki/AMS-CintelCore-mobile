@@ -135,7 +135,7 @@ export default function Home() {
               )}
             />
   
-            <AwesomeButton backgroundColor="#010089" onPress={handleSubmit} stretch borderRadius={50}>SUBMIT</AwesomeButton>
+            <AwesomeButton backgroundColor="#08154A" onPress={handleSubmit} stretch borderRadius={50} backgroundDarker="#D51635">SUBMIT</AwesomeButton>
           </View>
         )}
       </Formik>
