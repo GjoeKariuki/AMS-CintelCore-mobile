@@ -6,6 +6,30 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AwesomeButton from "react-native-really-awesome-button";
+import { Audio } from "expo-av";
+import * as Haptics from "expo-haptics";
+
+async function playSoundAndVibrate() {
+  const sound = new Audio.Sound();
+
+  try {
+    console.log("Loading Sound");
+    await sound.loadAsync(require("../../assets/sounds/arp-03-83545.mp3"));
+    await sound.playAsync();
+
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+    sound.setOnPlaybackStatusUpdate(async (status) => {
+      if (status.didJustFinish) {
+        // The sound has finished playing, unload it
+        await sound.unloadAsync();
+      }
+    });
+  } catch (error) {
+    // Handle errors here
+    console.error("Error:", error);
+  }
+}
 
 export default function Floor() {
   const dispatch = useUserDispatch();
@@ -49,6 +73,7 @@ export default function Floor() {
   };
 
   const _onPress = (floor) => {
+    playSoundAndVibrate();
     selectFloor(floor);
     router.push("/office");
   };
