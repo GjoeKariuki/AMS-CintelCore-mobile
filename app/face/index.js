@@ -186,13 +186,13 @@ export default function FaceDetection() {
             width={10}
             backgroundWidth={7}
             fill={fillAnimation}
-            tintColor="#010089"
+            tintColor="#08154A"
             backgroundColor="#e8e8e8"
           />
         </Camera>
       </MaskedView>
       <View style={styles.instructionsContainer}>
-        <Text style={styles.action}>Standby for Image Capture</Text>
+        <Text style={styles.action}>Move Closer to the Camera Until the Circle is Fully Filled!</Text>
       </View>
     </SafeAreaView>
   );

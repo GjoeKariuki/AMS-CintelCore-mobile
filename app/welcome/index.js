@@ -129,7 +129,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   welcome: {
-    color: "#566570"
+    color: "#566570",
+    fontSize: 46
 
   },
 

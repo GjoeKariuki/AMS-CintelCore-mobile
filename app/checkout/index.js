@@ -175,7 +175,7 @@ export default function FaceDetection() {
         </Camera>
       </MaskedView>
       <View style={styles.instructionsContainer}>
-        <Text style={styles.action}>Standby for Image Capture</Text>
+        <Text style={styles.action}>Move Closer to the Camera Until the Circle is Fully Filled!</Text>
       </View>
     </SafeAreaView>
   );
