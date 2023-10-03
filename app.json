@@ -27,7 +27,8 @@
         "android.permission.INTERNET",
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
-      ]
+      ],
+      "package": "com.techsavant.cintelcoreams"
     },
     "web": {
       "favicon": "./assets/favicon.png"
