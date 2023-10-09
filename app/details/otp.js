@@ -69,7 +69,7 @@ export default function Details() {
 
       if (response.status === 200) {
         // Verification succeeded, navigate to a different screen
-        router.push("/final");
+        router.push("/floor");
       } else {
         setErrorMessage(true);
       }
