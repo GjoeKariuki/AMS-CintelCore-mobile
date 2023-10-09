@@ -55,25 +55,27 @@ export default function Welcome() {
 
   const handleCheckIn = () => {
     playSoundAndVibrate();
-     // Delay the navigation to the next screen by 1 second (adjust the delay duration as needed)
-  setTimeout(() => {
-    router.push("/face");
-  }, 1000); // Delay in milliseconds (1 second in this case)
+    // Delay the navigation to the next screen by 1 second (adjust the delay duration as needed)
+    setTimeout(() => {
+      router.push("/face");
+    }, 1000); // Delay in milliseconds (1 second in this case)
   };
 
   const handleCheckOut = () => {
     playSoundAndVibrate();
-     // Delay the navigation to the next screen by 1 second (adjust the delay duration as needed)
-  setTimeout(() => {
-    router.push("/checkout");
-  }, 1000); // Delay in milliseconds (1 second in this case)
+    // Delay the navigation to the next screen by 1 second (adjust the delay duration as needed)
+    setTimeout(() => {
+      router.push("/checkout");
+    }, 1000); // Delay in milliseconds (1 second in this case)
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
         <Stack spacing={15}>
-          <Text variant="h3" style={styles.welcome}>Welcome To : </Text>
+          <Text variant="h3" style={styles.welcome}>
+            Welcome To :{" "}
+          </Text>
 
           <Text variant="h2" style={styles.buildingName}>
             {buildingName}
@@ -84,12 +86,10 @@ export default function Welcome() {
               name="rick"
               backgroundColor="#08154A"
               type="primary"
-              
               textSize={22}
               springRelease={true}
               height={56}
               onPress={handleCheckIn}
-              
             >
               CHECK-IN
             </ThemedButton>
@@ -130,8 +130,7 @@ const styles = StyleSheet.create({
   },
   welcome: {
     color: "#566570",
-    fontSize: 46
-
+    fontSize: 46,
   },
 
   checkInButton: {

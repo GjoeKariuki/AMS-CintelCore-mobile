@@ -8,6 +8,30 @@ import axios from "axios";
 import { CustomInput } from "../components/customInput";
 import { useUser, useUserDispatch } from "../../lib/contexts/userContext";
 import AwesomeButton from "react-native-really-awesome-button";
+import { Audio } from "expo-av";
+import * as Haptics from "expo-haptics";
+
+async function playSoundAndVibrate() {
+  const sound = new Audio.Sound();
+
+  try {
+    console.log("Loading Sound");
+    await sound.loadAsync(require("../../assets/sounds/arp-03-83545.mp3"));
+    await sound.playAsync();
+
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+    sound.setOnPlaybackStatusUpdate(async (status) => {
+      if (status.didJustFinish) {
+        // The sound has finished playing, unload it
+        await sound.unloadAsync();
+      }
+    });
+  } catch (error) {
+    // Handle errors here
+    console.error("Error:", error);
+  }
+}
 
 export default function Id() {
   const { phone_number } = useUser();
@@ -48,6 +72,7 @@ export default function Id() {
   };
 
   const _submit = async ({ phone_number }) => {
+    playSoundAndVibrate();
     const formattedPhoneNumber = `254${phone_number.slice(1)}`;
     handleChangeId(formattedPhoneNumber);
 

@@ -13,6 +13,31 @@ import axios from "axios"; // Import Axios
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AwesomeButton from "react-native-really-awesome-button";
 
+import { Audio } from "expo-av";
+import * as Haptics from "expo-haptics";
+
+async function playSoundAndVibrate() {
+  const sound = new Audio.Sound();
+
+  try {
+    console.log("Loading Sound");
+    await sound.loadAsync(require("../../assets/sounds/arp-03-83545.mp3"));
+    await sound.playAsync();
+
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+    sound.setOnPlaybackStatusUpdate(async (status) => {
+      if (status.didJustFinish) {
+        // The sound has finished playing, unload it
+        await sound.unloadAsync();
+      }
+    });
+  } catch (error) {
+    // Handle errors here
+    console.error("Error:", error);
+  }
+}
+
 const CELL_COUNT = 6;
 
 export default function Details() {
@@ -39,6 +64,7 @@ export default function Details() {
   }, [seconds]);
 
   const submitOTP = async () => {
+    playSoundAndVibrate();
     // Log the value of OTP entered by the user
     console.log("Entered OTP:", value);
 
@@ -82,6 +108,7 @@ export default function Details() {
   };
 
   const resendOTP = async () => {
+    playSoundAndVibrate();
     const id = await AsyncStorage.getItem("tempID");
     setSeconds(30);
     setValue("");
