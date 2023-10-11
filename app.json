@@ -4,7 +4,7 @@
     "slug": "cintelcore-ams",
     "version": "1.0.0",
     "scheme": "cintelcore-ams",
-    "orientation": "default",
+    "orientation": "landscape",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {

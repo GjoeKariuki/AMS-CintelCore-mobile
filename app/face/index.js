@@ -77,11 +77,19 @@ export default function FaceDetection() {
 
       setIsFaceDetected(true);
       setFaces(faces);
-      setFillAnimation(fillPercentage); // Set the fill animation based on the face area ratio
 
-      if (fillPercentage >= 100) {
-        capturePhotoAndNavigate();
-        // take an image
+      // Calculate the fill animation percentage based on the face area ratio
+      let fillAnimationPercentage = fillPercentage;
+
+      if (fillPercentage >= 55) {
+        // Gradually increase fillAnimationPercentage to 100% over time
+        fillAnimationPercentage = 55 + (fillPercentage - 55) * 2;
+      }
+
+      setFillAnimation(fillAnimationPercentage); // Set the fill animation based on the face area ratio
+
+      if (fillAnimationPercentage >= 100) {
+        capturePhotoAndNavigate(); // Capture photo when face fills 100% of the mask
         console.log("Image taken!");
       }
     } else {
@@ -167,7 +175,6 @@ export default function FaceDetection() {
           ref={cameraRef}
           style={{
             ...StyleSheet.absoluteFillObject,
-           
           }}
           ratio="16:9"
           type={type}
@@ -192,7 +199,9 @@ export default function FaceDetection() {
         </Camera>
       </MaskedView>
       <View style={styles.instructionsContainer}>
-        <Text style={styles.action}>Move Closer to the Camera Until the Circle is Fully Filled!</Text>
+        <Text style={styles.action}>
+          Move Closer to the Camera Until the Circle is Fully Filled!
+        </Text>
       </View>
     </SafeAreaView>
   );
