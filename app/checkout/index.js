@@ -80,9 +80,9 @@ export default function FaceDetection() {
       // Calculate the fill animation percentage based on the face area ratio
       let fillAnimationPercentage = fillPercentage;
 
-      if (fillPercentage >= 55) {
+      if (fillPercentage >= 45) {
         // Gradually increase fillAnimationPercentage to 100% over time
-        fillAnimationPercentage = 55 + (fillPercentage - 55) * 2;
+        fillAnimationPercentage = 45 + (fillPercentage - 45) * 2;
       }
 
       setFillAnimation(fillAnimationPercentage); // Set the fill animation based on the face area ratio
