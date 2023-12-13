@@ -114,6 +114,8 @@ export default function FaceDetection() {
       // Store the local URI in AsyncStorage for future reference
       await AsyncStorage.setItem("localPhotoUri", localUri);
 
+      const token = await AsyncStorage.getItem("token");
+
       let form = new FormData();
       form.append("image", {
         uri: localUri,
@@ -124,6 +126,7 @@ export default function FaceDetection() {
       const config = {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Token ${token}`,
         },
       };
 
