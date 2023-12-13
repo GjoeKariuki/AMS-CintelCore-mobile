@@ -80,9 +80,13 @@ export default function Home() {
         "buildingName",
         response.data.user.building.building_name
       );
-
+      await AsyncStorage.setItem("token", response.data.token);
+      
+      console.log(response.data);
+      console.log(response.data.token);
       console.log(response.data.user.building.building_name);
       console.log(response.data.user.building.id);
+      console.log(response.data.user.token);
       router.push("/welcome");
       //   const response = await axios.post('https://example.com/login', {
       //     email,
