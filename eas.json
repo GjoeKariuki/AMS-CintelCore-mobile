@@ -13,7 +13,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://cintelcoreams.com"
+        "EXPO_PUBLIC_API_URL": "http://51.20.117.229:80"
       }
     },
     "production": {}
