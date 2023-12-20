@@ -9,6 +9,7 @@ import * as FileSystem from "expo-file-system";
 import axios from "axios";
 import { useUser, useUserDispatch } from "../../lib/contexts/userContext";
 import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width: windowWidth } = Dimensions.get("window");
 
@@ -109,6 +110,8 @@ export default function FaceDetection() {
         to: localUri,
       });
 
+      const token = await AsyncStorage.getItem("token");
+
       let form = new FormData();
       form.append("image", {
         uri: localUri,
@@ -119,6 +122,7 @@ export default function FaceDetection() {
       const config = {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Token ${token}`,
         },
       };
 
