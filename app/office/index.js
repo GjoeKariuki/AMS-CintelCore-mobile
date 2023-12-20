@@ -36,22 +36,31 @@ export default function office() {
   const [floorId, setFloorId] = useState("");
   const [offices, setOffices] = useState([]);
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+  
 
   useEffect(() => {
+
     AsyncStorage.getItem("selectedFloorId").then((value) => {
       if (value) {
         console.log("Fetched floorId: ", value);
-        const parseFloorId = parseInt(value, 10);
-        setFloorId(parseFloorId);
-        fetchOffices(parseFloorId);
+        
+        setFloorId(value);
+        fetchOffices(value);
       }
     });
   }, []);
 
   const fetchOffices = async (floorId) => {
+    const token = await AsyncStorage.getItem("token");
     try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+      };
       const response = await axios.get(
-        apiUrl + `/office/?floor=${floorId}`
+        apiUrl + `/office/?floor=${floorId}`,config
       );
       console.log("Office Response: ", response.data);
 
@@ -72,9 +81,10 @@ export default function office() {
     dispatch({ type: "SET_office", payload: office });
   };
 
-  const _onPress = (office) => {
+  const _onPress = async (office) => {
     playSoundAndVibrate();
     selectoffice(office);
+    const token = await AsyncStorage.getItem("token");
 
     // Fetch buildingId, visitorId, and other data from AsyncStorage
     AsyncStorage.multiGet(["buildingId", "visitorId", "selectedFloorId"])
@@ -91,9 +101,16 @@ export default function office() {
           office_id: office.id.toString(), // Convert to string
         };
 
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${token}`,
+          },
+        };
+
         // Make a POST request to your backend server
         axios
-          .post(apiUrl + "/visit/", payload)
+          .post(apiUrl + "/visit/", payload, config)
           .then((response) => {
             // Handle the response as needed
             console.log("POST Response: ", response.data);
