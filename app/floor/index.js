@@ -49,9 +49,16 @@ export default function Floor() {
   }, []);
 
   const fetchFloors = async (buildingId) => {
+    const token = await AsyncStorage.getItem("token");
     try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+      };
       const response = await axios.get(
-        apiUrl + `/floor/?building=${buildingId}`
+        apiUrl + `/floor/?building=${buildingId}`,config
       );
       console.log("Response: ", response.data);
 
