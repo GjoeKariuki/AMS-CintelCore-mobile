@@ -75,6 +75,7 @@ export default function Details() {
 
     try {
       const id = await AsyncStorage.getItem("tempID");
+      const token = await AsyncStorage.getItem("token");
 
       // Combine the data into a single object
       const data = {
@@ -88,6 +89,7 @@ export default function Details() {
       const response = await axios.post(apiUrl + "/verify-visitor-otp/", data, {
         headers: {
           "Content-Type": "application/json", // specify the content type
+          Authorization: `Token ${token}`,
         },
       });
 

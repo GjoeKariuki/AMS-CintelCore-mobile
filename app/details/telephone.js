@@ -3,13 +3,14 @@ import { Field, Formik } from "formik";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Button, Text } from "@react-native-material/core";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+
 
 import { CustomInput } from "../components/customInput";
 import { useUser, useUserDispatch } from "../../lib/contexts/userContext";
 import AwesomeButton from "react-native-really-awesome-button";
 import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
+import axios from "axios";
 
 async function playSoundAndVibrate() {
   const sound = new Audio.Sound();
@@ -37,6 +38,7 @@ export default function Id() {
   const { phone_number } = useUser();
   const dispatch = useUserDispatch();
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+  
 
   function handleChangeId(phone_number) {
     dispatch({ type: "SET_PHONE_NUMBER", payload: phone_number });
@@ -45,6 +47,7 @@ export default function Id() {
   const postImage = async (id) => {
     try {
       const savedLocalUri = await AsyncStorage.getItem("localPhotoUri");
+      const token = await AsyncStorage.getItem("token");
       if (!savedLocalUri) {
         console.log("No saved image URI found.");
         return;
@@ -60,6 +63,7 @@ export default function Id() {
       const newConfig = {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Token ${token}`,
         },
       };
 
@@ -76,41 +80,43 @@ export default function Id() {
     const formattedPhoneNumber = `254${phone_number.slice(1)}`;
     handleChangeId(formattedPhoneNumber);
 
+    await AsyncStorage.setItem("phoneNumber", formattedPhoneNumber);
+
+    // Save the input values in AsyncStorage
     try {
-      const firstName = await AsyncStorage.getItem("tempFirstName");
-      const lastName = await AsyncStorage.getItem("tempLastName");
-      const id = await AsyncStorage.getItem("tempID");
+      // Retrieve values from AsyncStorage
+      const storedPhoneNumber = await AsyncStorage.getItem("phoneNumber");
+      const storedId = await AsyncStorage.getItem("tempID");
+      const token = await AsyncStorage.getItem("token");
 
-      const data = {
-        first_name: firstName,
-        last_name: lastName,
-        id_number: id,
-        phone_number: formattedPhoneNumber,
-      };
-
-      console.log("Data being sent:", data);
-
-      const response = await axios.post(apiUrl + "/visitor/", data, {
+      const config = {
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
         },
-      });
+      };
 
-      console.log("POST request successful:", response.data);
-      AsyncStorage.setItem("visitorId", response.data.id.toString());
+      const response = await axios.get(`${apiUrl}/visitor/?id_number=${storedId}&phone_number=${storedPhoneNumber}`, config);
 
-      // Post the image
-      const image_id = await response.data.id;
+      console.log("Response from API:", response.data);
 
-      postImage(image_id);
-    } catch (error) {
-      console.log("Error making the POST request:", error);
-      if (error.response) {
-        console.log("Server Error Response Data:", error.response.data);
+      if (response.data && response.data.length === 0) {
+        router.push("/details/names"); // Proceed to details/names if the response is an empty list
+      } else {
+        // Update the image field (assuming you're updating the image in AsyncStorage)
+        const visitorId = response.data.id;
+        postImage(visitorId);
+  
+        router.push("/floor"); // Proceed to floor after updating the image
       }
+      
+      console.log("Values stored in AsyncStorage:", formattedPhoneNumber);
+    } catch (error) {
+      console.error("Error saving input values:", error);
+      console.error("Error fetching data from the API:", error.response?.data || error.message);
     }
 
-    router.push("/details/otp");
+    router.push("/details/names");
   };
 
   return (

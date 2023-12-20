@@ -1,15 +1,16 @@
 import { router } from "expo-router";
-import { View, StyleSheet } from "react-native";
 import { Field, Formik } from "formik";
-import { Text } from "@react-native-material/core";
+import { ScrollView, StyleSheet, View } from "react-native";
+import {  Text } from "@react-native-material/core";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Audio } from 'expo-av';
-import * as Haptics from 'expo-haptics';
 
-import { useUser, useUserDispatch } from "../../lib/contexts/userContext";
 import { CustomInput } from "../components/customInput";
+import { useUser, useUserDispatch } from "../../lib/contexts/userContext";
+
 import AwesomeButton from "react-native-really-awesome-button";
 
+import { Audio } from "expo-av";
+import * as Haptics from "expo-haptics";
 
 async function playSoundAndVibrate() {
   const sound = new Audio.Sound();
@@ -33,99 +34,108 @@ async function playSoundAndVibrate() {
   }
 }
 
-export default function FullName() {
-  const { first_name, last_name } = useUser();
+export default function Id() {
+  const { id_number } = useUser();
   const dispatch = useUserDispatch();
 
-  function handleChangeName({ first_name, last_name }) {
-    dispatch({ type: "SET_FIRST_NAME", payload: first_name });
-    dispatch({ type: "SET_LAST_NAME", payload: last_name });
+  function handleChangeId(id_number) {
+    dispatch({ type: "SET_ID_NUMBER", payload: id_number });
   }
 
-  const _submit = async ({ first_name, last_name }) => {
+  const _submit = async ({ id_number }) => {
     playSoundAndVibrate();
-    handleChangeName({ first_name, last_name });
+    handleChangeId(id_number);
 
-    // Save the input values in AsyncStorage
+    // Save the input Value in AsyncStorage
     try {
-      await AsyncStorage.setItem("tempFirstName", first_name);
-      await AsyncStorage.setItem("tempLastName", last_name);
-      console.log("Values stored in AsyncStorage:", first_name, last_name);
+      await AsyncStorage.setItem("tempID", id_number);
+
+      console.log("ID Number Stored: ", id_number);
     } catch (error) {
-      console.error("Error saving input values:", error);
+      console.log("Error saving input value");
     }
-    router.push("/details/id");
+    router.push("/details/telephone");
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.InputFields}>
-        <Formik initialValues={{ first_name, last_name }} onSubmit={_submit}>
-          {({ handleSubmit, isValid }) => (
-            <View style={styles.inputContainer}>
-              <View style={styles.name}>
-                <Text variant="h4">First Name</Text>
-                <Field
-                  component={CustomInput}
-                  name="first_name"
-                  label="First Name"
-                  autoFocus
-                  labelStyle={{ fontSize: 32 }} // add this line
-                  style={styles.input}
-                />
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.main}>
+        <View style={styles.content}>
+          <Formik initialValues={{ id_number }} onSubmit={_submit}>
+            {({ handleSubmit, isValid }) => (
+              <View style={styles.inputContainer}>
+                <View style={styles.id}>
+                  <Text variant="h4">ID Number</Text>
+                  <Field
+                    component={CustomInput}
+                    name="id_number"
+                    label="ID Number"
+                    keyboardType="numeric"
+                    autoFocus
+                    style={styles.input}
+                  />
+                </View>
+
+                <View style={styles.nextButton}>
+                  <AwesomeButton
+                    backgroundColor="#010089"
+                    onPress={handleSubmit}
+                    stretch
+                    textSize={20}
+                  >
+                    Next
+                  </AwesomeButton>
+                </View>
               </View>
-              <View style={styles.name}>
-                <Text variant="h4">Last Name</Text>
-                <Field
-                  component={CustomInput}
-                  name="last_name"
-                  label="Last Name"
-                  style={styles.input}
-                  labelStyle={{ fontSize: 32 }}
-                />
-              </View>
-              <View style={styles.nextButton}>
-                <AwesomeButton backgroundColor="#010089" onPress={handleSubmit} stretch textSize={20}>
-                  Next
-                </AwesomeButton>
-              </View>
-            </View>
-          )}
-        </Formik>
+            )}
+          </Formik>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
+    padding: 76,
     alignItems: "center",
-    justifyContent: "center",
   },
-  InputFields: {
+  main: {
     flex: 1,
+    flexDirection: "row",
+    gap: 120,
     width: 800,
-    alignItems: "center",
+  },
+  content: {
+    flex: 1,
+    paddingTop: 130,
   },
   inputContainer: {
     flexDirection: "row",
-    paddingTop: 20,
-    gap: 40,
+    alignItems: "center",
+    justifyContent: "center",
   },
   input: {
     flex: 1,
     marginRight: 10,
   },
+  outlinedBtn: {
+    borderColor: "#010089",
+    borderRadius: 100,
+    borderWidth: 2,
+    color: "#010089",
+    fontSize: 20,
+  },
   nextButton: {
     width: 120,
+    height: 55,
     justifyContent: "center",
-    marginTop: 56,
-    marginLeft: 10,
+    marginTop: 41,
+    marginLeft: 20,
   },
-  name: {
-    flexDirection: "column",
-    gap: 10,
+  id: {
     width: 300,
+    gap: 10,
   },
 });
