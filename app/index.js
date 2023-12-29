@@ -82,7 +82,7 @@ export default function Home() {
       );
       await AsyncStorage.setItem("token", response.data.token);
       
-      console.log(response);
+      console.log(response.data);
       console.log(response.data.token);
       console.log(response.data.user.building.building_name);
       console.log(response.data.user.building.id);
