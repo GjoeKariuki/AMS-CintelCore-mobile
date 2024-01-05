@@ -15,6 +15,9 @@ import AwesomeButton from "react-native-really-awesome-button";
 
 import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
+import BackButton from '../components/backbtn'
+
+
 
 async function playSoundAndVibrate() {
   const sound = new Audio.Sound();
@@ -86,7 +89,7 @@ export default function Details() {
       console.log("Data being sent:", data);
 
       // Make the POST request to the backend server
-      const response = await axios.post(apiUrl + "/verify-visitor-otp/", data, {
+      const response = await axios.post(`https://staging--api.cintelcoreams.com` + "/verify-visitor-otp/", data, {
         headers: {
           "Content-Type": "application/json", // specify the content type
           Authorization: `Token ${token}`,
@@ -118,7 +121,7 @@ export default function Details() {
       id_number: id,
     };
 
-    const response = await axios.post(apiUrl + "/resend-visitor-otp/", data, {
+    const response = await axios.post(`https://staging--api.cintelcoreams.com` + "/resend-visitor-otp/", data, {
       headers: {
         "Content-Type": "application/json", // specify the content type
       },
@@ -194,6 +197,9 @@ export default function Details() {
           </View>
         </View>
       </View>
+      <View >
+        <BackButton />
+      </View>
     </ScrollView>
   );
 }
@@ -240,4 +246,5 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: "center",
   },
+  
 });

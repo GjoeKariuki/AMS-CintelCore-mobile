@@ -11,6 +11,9 @@ import AwesomeButton from "react-native-really-awesome-button";
 import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
 import axios from "axios";
+import BackButton from "../components/backbtn";
+
+
 
 async function playSoundAndVibrate() {
   const sound = new Audio.Sound();
@@ -37,7 +40,8 @@ async function playSoundAndVibrate() {
 export default function Id() {
   const { phone_number } = useUser();
   const dispatch = useUserDispatch();
-  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+  const apiUrr = process.env.EXPO_PUBLIC_API_URL;
+  const apiUrl = `${apiUrr}`
   
 
   function handleChangeId(phone_number) {
@@ -68,7 +72,7 @@ export default function Id() {
       };
 
       console.log(`Posting the image`);
-      await axios.put(apiUrl + `/visitor/${id}/`, newForm, newConfig);
+      await axios.put(`https://staging--api.cintelcoreams.com` + `/visitor/${id}/`, newForm, newConfig);
       await AsyncStorage.removeItem("localPhotoUri");
     } catch (error) {
       console.log("Error posting image or retrieving saved URI: ", error);
@@ -96,7 +100,7 @@ export default function Id() {
         },
       };
 
-      const response = await axios.get(`${apiUrl}/visitor/?id_number=${storedId}&phone_number=${storedPhoneNumber}`, config);
+      const response = await axios.get(`https://staging--api.cintelcoreams.com/visitor/?id_number=${storedId}&phone_number=${storedPhoneNumber}`, config);
 
       console.log("Response from API:", response.data);
 
@@ -153,6 +157,9 @@ export default function Id() {
           </Formik>
         </View>
       </View>
+      <View >
+    <BackButton />
+  </View>
     </ScrollView>
   );
 }

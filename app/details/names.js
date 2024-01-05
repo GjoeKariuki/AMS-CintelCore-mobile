@@ -10,6 +10,7 @@ import { useUser, useUserDispatch } from "../../lib/contexts/userContext";
 import { CustomInput } from "../components/customInput";
 import AwesomeButton from "react-native-really-awesome-button";
 import axios from "axios";
+import BackButton from "../components/backbtn";
 
 async function playSoundAndVibrate() {
   const sound = new Audio.Sound();
@@ -68,7 +69,7 @@ export default function FullName() {
       };
 
       console.log(`Posting the image`);
-      await axios.put(apiUrl + `/visitor/${id}/`, newForm, newConfig);
+      await axios.put(`https://staging--api.cintelcoreams.com` + `/visitor/${id}/`, newForm, newConfig);
       await AsyncStorage.removeItem("localPhotoUri");
     } catch (error) {
       console.log("Error posting image or retrieving saved URI: ", error);
@@ -94,7 +95,7 @@ export default function FullName() {
 
       console.log("Data being sent:", data);
 
-      const response = await axios.post(apiUrl + "/visitor/", data, {
+      const response = await axios.post(`https://staging--api.cintelcoreams.com` + "/visitor/", data, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Token ${token}`,
@@ -155,7 +156,11 @@ export default function FullName() {
           )}
         </Formik>
       </View>
+      <View >
+    <BackButton />
+  </View>
     </View>
+    
   );
 }
 
@@ -169,6 +174,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: 800,
     alignItems: "center",
+    justifyContent: "center"
   },
   inputContainer: {
     flexDirection: "row",

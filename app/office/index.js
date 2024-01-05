@@ -8,6 +8,9 @@ import axios from "axios";
 import AwesomeButton from "react-native-really-awesome-button";
 import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
+import BackButton from "../components/backbtn";
+
+
 
 async function playSoundAndVibrate() {
   const sound = new Audio.Sound();
@@ -60,7 +63,7 @@ export default function office() {
         },
       };
       const response = await axios.get(
-        apiUrl + `/office/?floor=${floorId}`,config
+        `https://staging--api.cintelcoreams.com` + `/office/?floor=${floorId}`,config
       );
       console.log("Office Response: ", response.data);
 
@@ -110,7 +113,7 @@ export default function office() {
 
         // Make a POST request to your backend server
         axios
-          .post(apiUrl + "/visit/", payload, config)
+          .post(`https://staging--api.cintelcoreams.com` + "/visit/", payload, config)
           .then((response) => {
             // Handle the response as needed
             console.log("POST Response: ", response.data);
@@ -175,6 +178,9 @@ export default function office() {
         </Text>
         <View style={styles.content}>{renderofficeButtons()}</View>
       </View>
+      <View >
+    <BackButton />
+  </View>
     </ScrollView>
   );
 }

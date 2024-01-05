@@ -125,9 +125,10 @@ export default function FaceDetection() {
           Authorization: `Token ${token}`,
         },
       };
-
+      // https://staging--api.cintelcoreams.com + "/checkout/"
+      // await axios.post(apiUrl + "/checkout/", form, config);
       try {
-        const response = await axios.post(apiUrl + "/checkout/", form, config);
+        const response = await axios.post(`https://staging--api.cintelcoreams.com` + "/checkout/", form, config);
         console.log(
           `Response Exists: ${JSON.stringify(response.data, null, 2)}`
         );

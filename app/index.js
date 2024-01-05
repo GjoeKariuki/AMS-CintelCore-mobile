@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { router } from "expo-router";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ScrollView, ImageBackground, Text } from "react-native";
 import {
   Button,
   Stack,
@@ -61,9 +61,21 @@ export default function Home() {
         username: email,
         password: password,
       };
+      
+      
 
+      // const response = await axios.post(
+      //   apiUrl+"/login/",
+      //   data,
+      //   {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // );
+      
       const response = await axios.post(
-        apiUrl+"/login/",
+        `https://staging--api.cintelcoreams.com` + "/login/",
         data,
         {
           headers: {
@@ -103,7 +115,11 @@ export default function Home() {
   };
 
   return (
+    // <ImageBackground style={styles.backgroundImg} source={require('../assets/images/login.jpg')}>
+    <ScrollView>
     <View style={styles.container}>
+    <View style={styles.login}><Text style={styles.logintxt}>LOG IN HERE</Text></View>
+
       <Formik
         initialValues={{ email: "", password: "" }}
         onSubmit={handleLogin}
@@ -144,14 +160,19 @@ export default function Home() {
         )}
       </Formik>
     </View>
+    </ScrollView>
+    // </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  
   container: {
     flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
+    paddingTop: 100
+    
   },
   formData: {
     width: 500,
@@ -160,5 +181,25 @@ const styles = StyleSheet.create({
   submitButton: {
     height: 56,
     justifyContent: "center",
+  },
+  backgroundImg: {
+    flex: 1,
+    resizeMode: 'contain',
+    marginTop: -508
+  },
+  login: {
+    //alignSelf: "center",
+    alignItems: "center",
+    
+  },
+  logintxt: {
+    color: 'black',
+    fontSize: 40,
+    fontWeight: 'bold',
+    lineHeight: 70,
+    fontFamily: 'sans-serif-light',
+    textShadowColor:"rgba(1,1,1,0.75)",
+    textShadowOffset:{width:2,height:2},
+    textShadowRadius:6
   },
 });

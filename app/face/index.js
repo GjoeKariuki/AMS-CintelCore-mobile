@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, Text, View, Dimensions, Button } from "react-native";
+import { StyleSheet, Text, View, Dimensions, Button, TouchableOpacity, ImageBackground } from "react-native";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -10,6 +10,10 @@ import axios from "axios";
 import { useUser, useUserDispatch } from "../../lib/contexts/userContext";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import BackButton from "../components/backbtn";
+import LinearGradient from 'react-native-linear-gradient';
+
+
 
 const { width: windowWidth } = Dimensions.get("window");
 
@@ -57,10 +61,14 @@ export default function FaceDetection() {
     // Camera permissions are not granted yet
     return (
       <View style={styles.container}>
-        <Text style={{ textAlign: "center" }}>
+        <Text style={{ textAlign: "center", fontSize:18, fontWeight: '600', padding:12, marginBottom: 10 }}>
           We need your permission to access the camera
         </Text>
-        <Button onPress={requestPermission} title="Grant Permission" />
+        <TouchableOpacity style={{ elevation: 8,
+    backgroundColor: "#1966a5",
+    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 12}}  onPress={requestPermission} title="Grant Permission" ><Text style={{color:'white',fontSize:20, fontWeight: '900'}}>Grant Permission</Text></TouchableOpacity>
       </View>
     );
   }
@@ -129,9 +137,10 @@ export default function FaceDetection() {
           Authorization: `Token ${token}`,
         },
       };
-
+      // https://staging--api.cintelcoreams.com + "/checkin/"
+      // await axios.post(apiUrl + "/checkin/", form, config);
       try {
-        const response = await axios.post(apiUrl + "/checkin/", form, config);
+        const response = await axios.post(`https://staging--api.cintelcoreams.com` + "/checkin/", form, config);
         console.log(
           `Response Exists: ${JSON.stringify(response.data, null, 2)}`
         );
@@ -206,6 +215,10 @@ export default function FaceDetection() {
           Move Closer to the Camera Until the Circle is Fully Filled!
         </Text>
       </View>
+      <View style={styles.btn} >
+        <BackButton />
+      </View>
+      
     </SafeAreaView>
   );
 }
@@ -245,4 +258,23 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
   },
+  container: {
+    flex: 1,
+    width: 250,
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    alignContent: "center",
+    padding: 30,
+    borderWidth: 2,
+    borderRadius: 40,
+    borderColor: 'lightblue',
+    marginBottom: 80
+  },
+  backgroundImg: {
+    flex: 1,
+    resizeMode: 'contain'
+  },
+  
+  
 });

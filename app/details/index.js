@@ -11,6 +11,7 @@ import AwesomeButton from "react-native-really-awesome-button";
 
 import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
+import BackButton from "../components/backbtn";
 
 async function playSoundAndVibrate() {
   const sound = new Audio.Sound();
@@ -91,7 +92,11 @@ export default function Id() {
           </Formik>
         </View>
       </View>
+      <View style={styles.btn} >
+    <BackButton />
+  </View>
     </ScrollView>
+    
   );
 }
 
@@ -137,5 +142,11 @@ const styles = StyleSheet.create({
   id: {
     width: 300,
     gap: 10,
+  },
+  btn: {
+    // position: 'absolute',
+    // alignSelf: 'center',
+    // right: 20,
+    // bottom: 0
   },
 });

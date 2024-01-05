@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, ImageBackground } from "react-native";
 import { Text, Stack, Button } from "@react-native-material/core";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ThemedButton } from "react-native-really-awesome-button";
@@ -7,6 +7,7 @@ import { ThemedButton } from "react-native-really-awesome-button";
 import { useEffect, useState } from "react";
 import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
+
 
 async function playSoundAndVibrate() {
   const sound = new Audio.Sound();
@@ -70,11 +71,13 @@ export default function Welcome() {
   };
 
   return (
+
+
     <View style={styles.container}>
       <View style={styles.innerContainer}>
         <Stack spacing={15}>
           <Text variant="h3" style={styles.welcome}>
-            Welcome To :{" "}
+            Welcome to:{" "}
           </Text>
 
           <Text variant="h2" style={styles.buildingName}>
@@ -106,14 +109,16 @@ export default function Welcome() {
 
         {/* <FAB icon={(props) => <Icon name="plus" {...props} />} /> */}
 
-        <View style={styles.imageContainer}>
+        {/* <View style={styles.imageContainer}>
           <Image
             style={styles.image}
             source={require("../../assets/illustration.jpg")}
           />
-        </View>
+        </View> */}
       </View>
     </View>
+ 
+
   );
 }
 
@@ -130,7 +135,11 @@ const styles = StyleSheet.create({
   },
   welcome: {
     color: "#566570",
-    fontSize: 46,
+    fontSize: 100,
+    textAlign: "center",
+    fontWeight: 700,
+    lineHeight: 110,
+    fontFamily: 'serif'
   },
 
   checkInButton: {
@@ -160,8 +169,9 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     marginTop: 30,
-    gap: 20,
+    //gap: 100,
   },
   bc: {
     borderWidth: 2,
@@ -171,4 +181,16 @@ const styles = StyleSheet.create({
     fontSize: 72,
     color: "#08154A",
   },
+  backgroundImg: {
+    flex: 1,
+    resizeMode: 'contain',
+    marginTop: -514,
+  },
+  blurred: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0
+  }
 });

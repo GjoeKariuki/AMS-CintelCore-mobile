@@ -8,6 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import AwesomeButton from "react-native-really-awesome-button";
 import { Audio } from "expo-av";
 import * as Haptics from "expo-haptics";
+import BackButton from "../components/backbtn";
 
 async function playSoundAndVibrate() {
   const sound = new Audio.Sound();
@@ -58,7 +59,7 @@ export default function Floor() {
         },
       };
       const response = await axios.get(
-        apiUrl + `/floor/?building=${buildingId}`,config
+        `https://staging--api.cintelcoreams.com` + `/floor/?building=${buildingId}`,config
       );
       console.log("Response: ", response.data);
 
@@ -137,6 +138,7 @@ export default function Floor() {
         </Text>
         <View style={styles.content}>{renderFloorButtons()}</View>
       </View>
+      <View><BackButton /></View>
     </ScrollView>
   );
 }
